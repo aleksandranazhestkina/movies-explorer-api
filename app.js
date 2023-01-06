@@ -6,6 +6,8 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const router = require('./routes/routes');
+
 const devDatabaseUrl = 'mongodb://localhost:27017/moviesdb';
 
 const { PORT = 3000, NODE_ENV, DATABASE_URL } = process.env;
@@ -23,6 +25,7 @@ app.use(helmet());
 app.use(limiter); // подключаем rate-limiter
 app.use(cors());
 app.use(bodyParser.json());
+app.use(router);
 
 app.use(errors());
 
