@@ -6,8 +6,9 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const devDatabaseUrl = 'mongodb://localhost:27017/moviesdb';
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV, DATABASE_URL } = process.env;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -25,10 +26,6 @@ app.use(bodyParser.json());
 
 app.use(errors());
 
-mongoose.connect('mongodb://localhost:27017/mydb', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : devDatabaseUrl);
 
 app.listen(PORT);
