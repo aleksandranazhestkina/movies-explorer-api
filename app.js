@@ -7,6 +7,8 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const router = require('./routes/routes');
+const errorHandler = require('./middlewares/errorHandler');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const devDatabaseUrl = 'mongodb://localhost:27017/moviesdb';
 
@@ -21,13 +23,17 @@ const limiter = rateLimit({
 
 const app = express();
 
+app.use('*', cors());
 app.use(helmet());
 app.use(limiter); // подключаем rate-limiter
-app.use(cors());
+app.use(requestLogger);
+
 app.use(bodyParser.json());
 app.use(router);
 
+app.use(errorLogger);
 app.use(errors());
+app.use(errorHandler);
 
 mongoose.connect(NODE_ENV === 'production' ? DATABASE_URL : devDatabaseUrl);
 
