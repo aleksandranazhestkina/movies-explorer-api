@@ -47,7 +47,7 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
-module.exports.deleteCard = (req, res, next) => {
+module.exports.deleteMovie = (req, res, next) => {
   const { filmId } = req.params;
   Movie.findById(filmId)
     .orFail(() => next(new NotFoundError('Фильм с указанным _id не найден.')))

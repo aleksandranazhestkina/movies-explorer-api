@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const routerUser = require('./users');
+const routerMovies = require('./movies');
 const NotFoundError = require('../errors/not-found-error');
 const { createUser, login } = require('../controllers/users');
 
@@ -8,6 +9,7 @@ router.post('/signin', login);
 router.post('/signup', createUser);
 
 router.use('/', routerUser);
+router.use('/', routerMovies);
 
 router.use('*', (req, res, next) => {
   next(new NotFoundError('Ресурс по указанному адресу не найден'));
