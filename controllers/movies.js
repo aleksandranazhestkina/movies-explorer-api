@@ -4,40 +4,14 @@ const BadRequestError = require('../errors/bad-request-error');
 const ForbiddenError = require('../errors/forbidden-error');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
-    .then((cards) => res.send(cards.reverse()))
+  Movie.find({ owner: req.user._id })
+    .then((films) => res.send(films.reverse()))
     .catch(next);
 };
 
 module.exports.createMovie = (req, res, next) => {
-  const {
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    thumbnail,
-    movieId,
-    nameRU,
-    nameEN,
-  } = req.body;
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    thumbnail,
-    movieId,
-    nameRU,
-    nameEN,
-    owner: req.user._id,
-  })
-    .then((card) => res.send(card))
+  Movie.create({ ...req.body, owner: req.user._id })
+    .then((film) => res.send(film))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы некорректные данные при создании фильма.'));
@@ -50,7 +24,7 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const { filmId } = req.params;
   Movie.findById(filmId)
-    .orFail(() => next(new NotFoundError('Фильм с указанным _id не найден.')))
+    .orFail(new NotFoundError('Фильм с указанным _id не найден.'))
     .then((film) => {
       if (!film.owner.equals(req.user._id)) {
         next(new ForbiddenError('Попытка удалить чужой фильм.'));

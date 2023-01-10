@@ -8,7 +8,7 @@ const ConflictError = require('../errors/conflict-error');
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(() => next(new NotFoundError('Пользователь c указанным _id не найден.')))
+    .orFail(new NotFoundError('Пользователь c указанным _id не найден.'))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {

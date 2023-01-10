@@ -25,8 +25,8 @@ const app = express();
 
 app.use('*', cors());
 app.use(helmet());
-app.use(limiter); // подключаем rate-limiter
 app.use(requestLogger);
+app.use(limiter); // подключаем rate-limiter
 
 app.use(bodyParser.json());
 app.use(router);

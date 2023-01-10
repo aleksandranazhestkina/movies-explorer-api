@@ -19,7 +19,7 @@ module.exports.validateCreateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: false } }),
     password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
   }),
 });
 

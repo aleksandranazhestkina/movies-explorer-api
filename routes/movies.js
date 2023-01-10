@@ -7,10 +7,6 @@ const {
   createMovie,
 } = require('../controllers/movies');
 
-const auth = require('../middlewares/auth');
-
-router.use(auth);
-
 router.get('/movies', getMovies);
 router.post('/movies', validateCreateMovie, createMovie);
 router.delete('/movies/:filmId', validateDeleteMovie, deleteMovie);
