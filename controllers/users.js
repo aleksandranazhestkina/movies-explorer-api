@@ -5,14 +5,22 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-error');
 const BadRequestError = require('../errors/bad-request-error');
 const ConflictError = require('../errors/conflict-error');
+const {
+  USER_NOT_FOUND,
+  WRONG_DATA_PROFILE,
+  WRONG_DATA_USER,
+  EMAIL_ALREADY_EXISTS,
+  WRONG_USER_ID,
+} = require('../utils/constants');
+
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail(new NotFoundError('Пользователь c указанным _id не найден.'))
+    .orFail(new NotFoundError(USER_NOT_FOUND))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный _id пользователя.'));
+        next(new BadRequestError(WRONG_USER_ID));
       } else {
         next(err);
       }
@@ -24,16 +32,17 @@ module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователь с указанным _id не найден.');
+        throw new NotFoundError(USER_NOT_FOUND);
       }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
-      }
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный _id пользователя.'));
+        next(new BadRequestError(WRONG_DATA_PROFILE));
+      } else if (err.code === 11000) {
+        next(new ConflictError(EMAIL_ALREADY_EXISTS));
+      } else if (err.name === 'CastError') {
+        next(new BadRequestError(WRONG_USER_ID));
       }
       next(err);
     });
@@ -54,9 +63,9 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя.'));
+        next(new BadRequestError(WRONG_DATA_USER));
       } else if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже зарегистрирован.'));
+        next(new ConflictError(EMAIL_ALREADY_EXISTS));
       } else {
         next(err);
       }
