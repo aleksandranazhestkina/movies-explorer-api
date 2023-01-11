@@ -7,6 +7,6 @@ module.exports.limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-module.exports.devDatabaseUrl = 'mongodb://localhost:27017/moviesdb';
+module.exports.devDatabaseUrl = 'mongodb://localhost:27017/bitfilmsdb';
 
 module.exports.devJwtKey = 'dev-key';

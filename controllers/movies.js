@@ -32,33 +32,12 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
-// module.exports.deleteMovie = (req, res, next) => {
-//   Movie.findById(req.params.movieId)
-//     .orFail(new NotFoundError('Фильм с указанным _id не найден.'))
-//     .then((movie) => {
-//       if (!movie.owner.equals(req.user._id)) {
-//         next(new ForbiddenError('Попытка удалить чужой фильм.'));
-//       }
-//       return movie.remove();
-//     })
-//     .then(() => {
-//       res.send({ message: 'Фильм удален' });
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         next(new BadRequestError('Переданы некорректные данные при удалении фильма.'));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
-
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById()
-    .orFail(() => (new NotFoundError(MOVIE_NOT_FOUND)))
+  Movie.findById(req.params.movieId)
+    .orFail(new NotFoundError(MOVIE_NOT_FOUND))
     .then((movie) => {
       if (movie.owner.toString() === req.user._id) {
-        return Movie.findByIdAndRemove()
+        return Movie.findByIdAndRemove(req.params.movieId)
           .then(() => res.send(MOVIE_IS_DELETE))
           .catch(next);
       }

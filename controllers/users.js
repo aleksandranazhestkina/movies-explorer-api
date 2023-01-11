@@ -13,7 +13,6 @@ const {
   WRONG_USER_ID,
 } = require('../utils/constants');
 
-
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(new NotFoundError(USER_NOT_FOUND))

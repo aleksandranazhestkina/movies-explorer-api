@@ -6,12 +6,12 @@ const helmet = require('helmet');
 
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
-const router = require('./routes');
+const router = require('./routes/routes');
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { limiter, devDatabaseUrl} = require('./utils/config');
+const { limiter, devDatabaseUrl } = require('./utils/config');
 
-const { PORT = 3000, NODE_ENV, DATABASE_URL } = process.env;
+const { PORT = 3001, NODE_ENV, DATABASE_URL } = process.env;
 
 const app = express();
 
